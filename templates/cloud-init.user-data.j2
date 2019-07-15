@@ -1,0 +1,40 @@
+#cloud-config
+
+manage_etc_hosts: true
+hostname: {{ vm.name }}
+fqdn: {{ vm.name }}.{{ uvtool_zone }}
+#preserve_hostname: true
+
+users:
+{% for user in uvtool_users %}
+  - name: {{ user.name }}
+    lock_passwd: false
+{% if user.comment is defined %}
+    gecos: {{ user.comment }}
+{% endif %}
+    groups: [ adm, sudo, netdev ]
+    sudo:  ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+{% if user.password is defined %}
+    passwd: {{ user.password }}
+{% endif %}
+    ssh_authorized_keys:
+{% for key in user['keys'] %}
+      - {{ lookup('file', key) }}
+{% endfor %}
+
+{% endfor %}
+
+package_update: True
+packages:
+  - python
+  - tree
+  - python-apt
+
+runcmd: 
+{% if uvtool_runcmd is defined %}
+{% for cmd in uvtool_runcmd %}
+  - {{ cmd }}
+{% endfor %}
+{% endif %}
+

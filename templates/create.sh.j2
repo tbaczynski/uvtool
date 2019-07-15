@@ -1,0 +1,10 @@
+#!/bin/bash
+
+/usr/bin/uvt-kvm create {{ vm.name }} release={{ vm.release | d('bionic') }} \
+  --memory {{ vm.mem | d('1024') }} \
+  --cpu {{ vm.cpu | d('1') }} \
+  --disk {{ vm.disk | d('10') }} \
+  --bridge {{ vm.bridge | d('br0') }} \
+  --user-data templates/{{ vm.name }}.user-data \
+  --meta-data templates/{{ vm.name }}.meta-data
+

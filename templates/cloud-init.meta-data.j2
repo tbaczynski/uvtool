@@ -1,0 +1,6 @@
+instance-id: {{ vm.name }}
+local_hostname: {{ vm.name }}
+availability_zone: {{ ansible_hostname }}
+
+{% include "files/" + vm.name + ".interfaces" ignore missing %}
+

@@ -1,0 +1,70 @@
+---
+- name: install pkg
+  apt:
+    name: '{{ item }}'
+    state: present
+  loop:
+    - uvtool
+  tags: [ uvtool ]
+
+- name: cron | sync images for uvtool
+  cron:
+    name: 'uvt_sync_ubuntu_{{ item.release }}.img'
+    minute: '{{ item.minute }}'
+    hour: '{{ item.hour }}'
+    user: root
+    job: 'uvt-simplestreams-libvirt sync release={{ item.release }} arch=amd64'
+    cron_file: uvt_sync_ubuntu_img
+  loop:
+    - { release: 'bionic', minute: 10, hour: 3 }
+    - { release: 'xenial', minute: 15, hour: 3 }
+  tags: [ uvtool ]
+
+- name: create dir for kvm templates
+  file:
+    state: directory
+    path: '{{ item }}'
+    owner: root
+    group: root
+    mode: '0750'
+  loop:
+    - '{{ uvtool_dir }}'
+    - '{{ uvtool_dir }}/templates'
+  tags: [ uvtool ]
+
+- name: create cloud-init meta-data for kvm nodes
+  template:
+    dest: '{{ uvtool_dir }}/templates/{{ vm.name }}.meta-data'
+    src: 'cloud-init.meta-data.j2'
+    owner: root
+    group: root
+    mode: '0640'
+  loop: '{{ uvtool_vms }}'
+  loop_control:
+    loop_var: vm
+  tags: [ uvtool ]
+
+- name: create cloud-init user-data for kvm nodes
+  template:
+    dest: '{{ uvtool_dir }}/templates/{{ vm.name }}.user-data'
+    src: 'cloud-init.user-data.j2'
+    owner: root
+    group: root
+    mode: '0640'
+  loop: '{{ uvtool_vms }}'
+  loop_control:
+    loop_var: vm
+  tags: [ uvtool ]
+
+- name: create create script for kvm nodes
+  template:
+    dest: '{{ uvtool_dir }}/create.{{ vm.name }}.sh'
+    src: 'create.sh.j2'
+    owner: root
+    group: root
+    mode: '0750'
+  loop: '{{ uvtool_vms }}'
+  loop_control:
+    loop_var: vm
+  tags: [ uvtool ]
+...

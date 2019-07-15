@@ -1,0 +1,24 @@
+---
+uvtool_dir: '/root/uvtool'
+uvtool_zone: 'example.com'
+uvtool_vms:
+  - name: 'vm1'
+    release: 'bionic'
+    cpu: '1'
+    mem: '1024'
+    disk: '10'
+    bridge: 'br0'
+  - name: 'vm2'
+    release: 'xenial'
+uvtool_users:
+  - name: user
+    comment: 'Jon Smith'
+    keys:
+      - '~/.ssh/id_rsa.pub'
+    password: $6$xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# for bionic and proper dhcp behavior
+# uvtool_runcmd:
+#   - 'netplan generate && netplan apply'
+
+...

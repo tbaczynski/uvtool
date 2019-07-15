@@ -1,0 +1,8 @@
+network-interfaces: |
+  auto ens3
+  iface ens3 inet static
+    address 192.168.55.101
+    netmask 255.255.255.0
+    gateway 192.168.55.1
+    dns-nameservers 8.8.8.8 1.1.1.1
+

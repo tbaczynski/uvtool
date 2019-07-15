@@ -1,0 +1,18 @@
+---
+image:
+  name: python
+
+stages:
+  - test
+
+lint:
+  stage: test
+  only:
+    refs:
+      - master
+      - web
+  script:
+    - 'pip install ansible-lint yamllint'
+    - 'ansible-lint -v .'
+    - 'yamllint -c .yamllint.yml .'
+...

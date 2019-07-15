@@ -6,7 +6,7 @@ fqdn: {{ vm.name }}.{{ uvtool_zone }}
 #preserve_hostname: true
 
 users:
-{% for user in uvtool_users %}
+{% for user in uvtool_users_hash %}
   - name: {{ user.name }}
     lock_passwd: false
 {% if user.comment is defined %}
@@ -27,9 +27,9 @@ users:
 
 package_update: True
 packages:
-  - python
-  - tree
-  - python-apt
+{% for pkg in uvtool_packages %}
+  - {{ pkg }}
+{% endfor %}
 
 runcmd: 
 {% if uvtool_runcmd is defined %}

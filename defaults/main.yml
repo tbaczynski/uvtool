@@ -1,6 +1,10 @@
 ---
 uvtool_dir: '/root/uvtool'
 uvtool_zone: 'example.com'
+uvtool_packages:
+  - python
+  - tree
+  - python-apt
 uvtool_vms:
   - name: 'vm1'
     release: 'bionic'
@@ -10,7 +14,19 @@ uvtool_vms:
     bridge: 'br0'
   - name: 'vm2'
     release: 'xenial'
-uvtool_users:
+
+uvtool_users_vars: 'hash'  # hash / dict
+uvtool_users_dict:
+  user:
+    uid: 1000
+    group: 'adm'
+    groups: 'adm'
+    comment: 'Jon Smith'
+    home: '/home/bul'
+    password: $6$xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    keys:
+      - "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+uvtool_users_hash:
   - name: user
     comment: 'Jon Smith'
     keys:

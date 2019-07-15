@@ -1,0 +1,55 @@
+#cloud-config
+
+manage_etc_hosts: true
+hostname: {{ vm.name }}
+fqdn: {{ vm.name }}.{{ uvtool_zone }}
+#preserve_hostname: true
+
+users:
+  {% for user,attr in uvtool_users_dict.iteritems() -%}
+  - name: {{ user }}
+    {% if attr['uid'] is defined -%}
+    uid: {{ attr['uid'] }}
+    {% endif -%}
+    {% if attr['group'] is defined -%}
+    primary_group: {{ attr['group'] }}
+    {% endif -%}
+    {% if attr['groups'] is defined -%}
+    groups: {{ attr['groups'] }}
+    {% endif -%}
+    {% if attr['comment'] is defined -%}
+    gecos: {{ attr['comment'] }}
+    {% endif -%}
+    {% if attr['home'] is defined -%}
+    homedir: {{ attr['home'] }}
+    {% endif -%}
+    {% if attr['shell'] is defined -%}
+    shell: {{ attr['shell'] | d('/bin/bash') }}
+    {% endif -%}
+    {% if attr['password'] is defined -%}
+    passwd: {{ attr['password'] }}
+    lock_passwd: false
+    {% endif -%}
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      {% for key in attr['key'] -%}
+      - {{ key }}
+      {% endfor %}
+
+  {% endfor %}
+
+
+
+package_update: True
+packages:
+{% for pkg in uvtool_packages %}
+  - {{ pkg }}
+{% endfor %}
+
+runcmd: 
+{% if uvtool_runcmd is defined %}
+{% for cmd in uvtool_runcmd %}
+  - {{ cmd }}
+{% endfor %}
+{% endif %}
+

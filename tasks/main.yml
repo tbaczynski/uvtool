@@ -47,14 +47,28 @@
 - name: create cloud-init user-data for kvm nodes
   template:
     dest: '{{ uvtool_dir }}/templates/{{ vm.name }}.user-data'
-    src: 'cloud-init.user-data.j2'
+    src: 'cloud-init.user-data.dict.j2'
     owner: root
     group: root
     mode: '0640'
   loop: '{{ uvtool_vms }}'
   loop_control:
     loop_var: vm
-  tags: [ uvtool ]
+  when: uvtool_users_vars == 'dict'
+  tags: [ uvtool, test ]
+
+- name: create cloud-init user-data for kvm nodes
+  template:
+    dest: '{{ uvtool_dir }}/templates/{{ vm.name }}.user-data'
+    src: 'cloud-init.user-data.hash.j2'
+    owner: root
+    group: root
+    mode: '0640'
+  loop: '{{ uvtool_vms }}'
+  loop_control:
+    loop_var: vm
+  when: uvtool_users_vars == 'hash'
+  tags: [ uvtool, test ]
 
 - name: create create script for kvm nodes
   template:

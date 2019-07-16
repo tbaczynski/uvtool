@@ -55,7 +55,7 @@
   loop_control:
     loop_var: vm
   when: uvtool_users_vars == 'dict'
-  tags: [ uvtool, test ]
+  tags: [ uvtool ]
 
 - name: create cloud-init user-data for kvm nodes
   template:
@@ -68,7 +68,7 @@
   loop_control:
     loop_var: vm
   when: uvtool_users_vars == 'hash'
-  tags: [ uvtool, test ]
+  tags: [ uvtool ]
 
 - name: create create script for kvm nodes
   template:

@@ -24,7 +24,7 @@ uvtool_users_dict:
     comment: 'Jon Smith'
     home: '/home/bul'
     password: $6$xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    keys:
+    key:
       - "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
 uvtool_users_hash:
   - name: user

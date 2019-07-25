@@ -6,9 +6,34 @@ To use dictinary vars, you must to define users in `uvtool_users_dict` and set `
 
 in `uvtool_users_hash` we define files with ssh keys not keys itself. In templates this content of this files will be readed and included in user-data.
 
-## network
-if you want to setup static IPs , you can create file `{{ vm.name }}.interfaces` in `./files` directory. This file (if exist) will be included in metadata template.  
-Example is in `files/example_vm.interfaces`.
+## vm definition
+- standard VM, example:
+```yaml
+uvtool_vms:
+  - name: 'vm1'
+    release: 'bionic'
+    cpu: '1'
+    mem: '1024'
+    disk: '10'
+    bridge: 'br0'
+```
+
+- if you want to setup static IPs , you need to define vars for this.  
+example cfg for vm with static IPs:
+```yaml
+uvtool_vms:
+  - name: 'vm3'
+    release: 'bionic'
+    bridge: 'br0'
+    interfaces:
+      device: 'ens3'
+      inet: 'static'  # static, dhcp
+      address: '192.168.55.101/23'
+      gw: '192.168.55.1'
+      ns:
+				- '8.8.8.8'
+				- '8.8.4.4'
+```
 
 ## how to use
 0. pre-requirements

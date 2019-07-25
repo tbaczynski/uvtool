@@ -2,5 +2,14 @@ instance-id: {{ vm.name }}
 local_hostname: {{ vm.name }}
 availability_zone: {{ ansible_hostname }}
 
-{% include "files/" + vm.name + ".interfaces" ignore missing %}
+{% if vm.interfaces is defined %}
+network-interfaces: |
+  auto {{ vm.interfaces.device | d('ens3') }}
+  iface {{ vm.interfaces.device | d('ens3') }} inet {{ vm.interfaces.inet | d('dhcp') }}
+{% if vm.interfaces.inet == 'static' %}
+    address {{ vm.interfaces.address }}
+    gateway {{ vm.interfaces.gw }}
+    dns-nameservers {{ vm.interfaces.ns | join(' ') }}
+{% endif %}
+{% endif %}
 
